@@ -1,0 +1,33 @@
+node{
+echo "the current lines are : ${env.BUILD_NUMBER}"
+echo "project name is ${env.JOB_NAME}"
+ echo "the build num is : ${env.BUILD_NUMBER}"   
+def mavenHome = tool name: 'maven 3.8.5'
+//getting code from git
+stage ('checkout'){
+git branch: 'development', credentialsId: 'caccfa2e-818e-4051-991d-0fa2580f332a', url: 'https://github.com/alexandar33/maven-web-application.git'
+}
+//building the code by using maven tool
+stage ('build'){
+sh "$mavenHome/bin/mvn clean package"
+}
+
+//exicute sonar report
+stage ('create sonar report'){
+sh "$mavenHome/bin/mvn sonar:sonar"
+}
+
+//create artfacr repo
+stage ('create artifact'){
+sh "$mavenHome/bin/mvn deploy"
+}
+
+//deploying appicatin to tom
+stage ('deploying'){
+sshagent(['2ada6c2e-cb8a-40e2-996c-352a1de4f0d9']) {
+   sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@15.207.72.85:/opt/apache-tomcat-9.0.62/webapps/"
+}
+
+}
+
+}
