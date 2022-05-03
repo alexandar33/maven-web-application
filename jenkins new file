@@ -26,6 +26,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
 
 node{
  try{
+ notifyBuild('STARTED')
 echo "the current lines are : ${env.BUILD_NUMBER}"
 echo "project name is ${env.JOB_NAME}"
  echo "the build num is : ${env.BUILD_NUMBER}"
