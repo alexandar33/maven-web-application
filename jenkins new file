@@ -24,7 +24,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   slackSend (color: colorCode, message: summary)
 }
 
-node{
+node ('slave'){
  try{
 notifyBuild(String buildStatus = 'STARTED')
 echo "the current lines are : ${env.BUILD_NUMBER}"
